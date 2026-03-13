@@ -12,7 +12,7 @@
     <h1>Receipt Optimizer</h1>
     <nav>
       <a href="#settings" :class="{ active: page === 'settings' }">Settings</a>
-      <a href="#receipts" :class="{ active: page === 'receipts' || page === 'receipt-form' }">Receipts</a>
+      <a href="#receipts" :class="{ active: ['receipts','receipt-details','receipt-form'].includes(page) }">Receipts</a>
     </nav>
   </header>
 
@@ -42,7 +42,7 @@
 
       <section x-data="categoriesManager()">
         <h2>Categories</h2>
-        <form @submit.prevent="create">
+        <form @submit.prevent="create" class="form-inline">
           <select x-model="selectedShopId" required>
             <option value="">Select shop…</option>
             <template x-for="shop in shops" :key="shop.id">
@@ -90,7 +90,8 @@
             <li>
               <span x-text="receipt.title"></span>
               <div class="row-actions">
-                <button @click="window.location.hash = 'receipts/' + receipt.id">Edit</button>
+                <button @click="window.location.hash = 'receipts/' + receipt.id">View</button>
+                <button @click="window.location.hash = 'receipts/' + receipt.id + '/edit'">Edit</button>
                 <button class="btn-danger" @click="confirmRemove(receipt)">Delete</button>
               </div>
             </li>
@@ -111,12 +112,102 @@
       </div>
     </div>
 
+    <!-- Receipt details -->
+    <div x-show="page === 'receipt-details'" x-data="receiptDetails()">
+      <section>
+        <div class="section-header">
+          <h2 x-text="title"></h2>
+          <div class="row-actions">
+            <button @click="window.location.hash = 'receipts/' + receiptId + '/edit'">Edit</button>
+            <a href="#receipts" class="btn-secondary">Back to list</a>
+          </div>
+        </div>
+
+        <h3>Items</h3>
+        <ul>
+          <template x-for="item in items" :key="item.id">
+            <li>
+              <span x-text="item.title"></span>
+              <span class="tag" x-text="item.value"></span>
+            </li>
+          </template>
+          <li x-show="items.length === 0" class="empty">No items yet.</li>
+        </ul>
+
+        <div class="optimize-bar">
+          <button @click="optimize" :disabled="optimizing" class="btn-optimize">
+            <span x-show="!optimizing">Optimize with AI</span>
+            <span x-show="optimizing">Thinking…</span>
+          </button>
+          <span x-show="optimizeError" class="error-text" x-text="optimizeError"></span>
+        </div>
+
+        <template x-if="suggestions.length > 0">
+          <div>
+            <h3>AI Suggestions</h3>
+            <ul class="suggestions">
+              <template x-for="s in suggestions" :key="s.receiptItemId">
+                <li class="suggestion-row">
+                  <div class="suggestion-item">
+                    <span class="suggestion-label" x-text="s.receiptItemTitle"></span>
+                    <span class="suggestion-arrow">→</span>
+                    <div class="suggestion-product">
+                      <strong x-text="s.productTitle"></strong>
+                      <span class="tag" x-text="s.categoryTitle"></span>
+                      <span class="price" x-text="s.price + ' BYN'"></span>
+                    </div>
+                  </div>
+                  <div class="suggestion-reason" x-text="s.reason"></div>
+                </li>
+              </template>
+            </ul>
+            <div class="suggestion-footer">
+              <span class="price">Total: <strong x-text="suggestionsTotal + ' BYN'"></strong></span>
+              <button @click="saveVariant" :disabled="savingVariant">
+                <span x-show="!savingVariant">Save proposition</span>
+                <span x-show="savingVariant">Saving…</span>
+              </button>
+            </div>
+          </div>
+        </template>
+      </section>
+
+      <template x-if="variants.length > 0">
+        <section>
+          <h2>Saved Propositions</h2>
+          <ul class="variants">
+            <template x-for="v in variants" :key="v.id">
+              <li class="variant-row">
+                <div class="variant-header">
+                  <span class="variant-date" x-text="formatDate(v.createdAt)"></span>
+                  <span class="price">Total: <strong x-text="v.totalPrice + ' BYN'"></strong></span>
+                  <div class="row-actions">
+                    <button class="btn-danger" @click="deleteVariant(v.id)">Delete</button>
+                  </div>
+                </div>
+                <ul class="variant-items">
+                  <template x-for="item in v.items" :key="item.id">
+                    <li>
+                      <span x-text="item.product.title"></span>
+                      <span class="price" x-text="item.price + ' BYN'"></span>
+                    </li>
+                  </template>
+                </ul>
+              </li>
+            </template>
+          </ul>
+        </section>
+      </template>
+    </div>
+
     <!-- Receipt form (create / edit) -->
     <div x-show="page === 'receipt-form'" x-data="receiptForm()">
       <section>
         <div class="section-header">
           <h2 x-text="receiptId ? 'Edit receipt' : 'New receipt'"></h2>
-          <a href="#receipts" class="btn-secondary">Back to list</a>
+          <a :href="receiptId ? '#receipts/' + receiptId : '#receipts'" class="btn-secondary">
+            <span x-text="receiptId ? 'Back to details' : 'Back to list'"></span>
+          </a>
         </div>
 
         <form @submit.prevent="save" class="form-block">
@@ -134,6 +225,7 @@
               <div class="form-row">
                 <input type="text" x-model="newItemTitle" placeholder="Item title…" required />
                 <input type="text" x-model="newItemValue" placeholder="Value…" required />
+                <input type="text" x-model="newItemNote" placeholder="Note… (optional)" class="input-note" />
                 <button type="submit">Add item</button>
               </div>
             </form>
@@ -142,41 +234,12 @@
                 <li class="item-row">
                   <input type="text" x-model="item.title" @change="updateItem(item)" />
                   <input type="text" x-model="item.value" @change="updateItem(item)" class="input-small" />
+                  <input type="text" x-model="item.note" @change="updateItem(item)" placeholder="Note…" class="input-note" />
                   <button class="btn-danger" @click="removeItem(item.id)">Delete</button>
                 </li>
               </template>
               <li x-show="items.length === 0" class="empty">No items yet.</li>
             </ul>
-
-            <div class="optimize-bar">
-              <button @click="optimize" :disabled="optimizing" class="btn-optimize">
-                <span x-show="!optimizing">Optimize with AI</span>
-                <span x-show="optimizing">Thinking…</span>
-              </button>
-              <span x-show="optimizeError" class="error-text" x-text="optimizeError"></span>
-            </div>
-
-            <template x-if="suggestions.length > 0">
-              <div>
-                <h3>AI Suggestions</h3>
-                <ul class="suggestions">
-                  <template x-for="s in suggestions" :key="s.receiptItemId">
-                    <li class="suggestion-row">
-                      <div class="suggestion-item">
-                        <span class="suggestion-label" x-text="s.receiptItemTitle"></span>
-                        <span class="suggestion-arrow">→</span>
-                        <div class="suggestion-product">
-                          <strong x-text="s.productTitle"></strong>
-                          <span class="tag" x-text="s.categoryTitle"></span>
-                          <span class="price" x-text="s.price + ' BYN'"></span>
-                        </div>
-                      </div>
-                      <div class="suggestion-reason" x-text="s.reason"></div>
-                    </li>
-                  </template>
-                </ul>
-              </div>
-            </template>
           </div>
         </template>
       </section>

@@ -7,6 +7,7 @@ import { categoriesRouter } from "./routes/categories.js";
 import { productsRouter } from "./routes/products.js";
 import { receiptsRouter } from "./routes/receipts.js";
 import { optimizeRouter } from "./routes/optimize.js";
+import { variantsRouter } from "./routes/variants.js";
 
 const app = new Hono();
 
@@ -20,6 +21,7 @@ app.route("/api/categories", categoriesRouter);
 app.route("/api/products", productsRouter);
 app.route("/api/receipts", receiptsRouter);
 app.route("/api/optimize", optimizeRouter);
+app.route("/api/variants", variantsRouter);
 
 // @ts-ignore
 const port = Number(process.env.API_PORT ?? 3000);

@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { db, receipts, products, categories } from "@receipt-optimizer/database";
 import { eq, inArray } from "drizzle-orm";
+import { callLLM, parseJsonArray } from "../llm.js";
 
 export const optimizeRouter = new Hono();
 
@@ -14,42 +15,8 @@ interface Suggestion {
   reason: string;
 }
 
-async function callLLM(apiKey: string, prompt: string): Promise<string> {
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 1024,
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
-
-  if (!response.ok) {
-    const err = await response.text();
-    throw new Error(`LLM request failed: ${err}`);
-  }
-
-  const data = await response.json() as { content: { type: string; text: string }[] };
-  return data.content.find((b) => b.type === "text")?.text ?? "";
-}
-
-function parseJsonArray<T>(text: string): T[] {
-  const match = text.match(/\[[\s\S]*\]/);
-  if (!match) throw new Error("No JSON array found in LLM response");
-  return JSON.parse(match[0]);
-}
-
 // POST /api/optimize/:receiptId
 optimizeRouter.post("/:receiptId", async (c) => {
-  // @ts-ignore
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return c.json({ error: "ANTHROPIC_API_KEY is not configured" }, 503);
-
   const receiptId = Number(c.req.param("receiptId"));
 
   const receipt = await db.query.receipts.findFirst({
@@ -63,7 +30,7 @@ optimizeRouter.post("/:receiptId", async (c) => {
   if (!allCategories.length) return c.json({ error: "No categories in catalog" }, 400);
 
   const itemsList = receipt.items
-    .map((it) => `- [id:${it.id}] ${it.title}: ${it.value}`)
+    .map((it) => `- [id:${it.id}] ${it.title}: ${it.value}${it.note ? ` (note: ${it.note})` : ""}`)
     .join("\n");
 
   // ── Step 1: pick relevant categories ────────────────────────────────────────
@@ -86,7 +53,7 @@ Return ONLY a JSON array. Each element must have:
 
   let categoryMatches: { receiptItemId: number; categoryIds: number[] }[];
   try {
-    const text = await callLLM(apiKey, step1Prompt);
+    const text = await callLLM(step1Prompt);
     categoryMatches = parseJsonArray(text);
   } catch (e) {
     return c.json({ error: `Step 1 failed: ${(e as Error).message}` }, 502);
@@ -137,7 +104,7 @@ Match every receipt item to exactly one product.`;
 
   let matches: { receiptItemId: number; productId: number; reason: string }[];
   try {
-    const text = await callLLM(apiKey, step2Prompt);
+    const text = await callLLM(step2Prompt);
     matches = parseJsonArray(text);
   } catch (e) {
     return c.json({ error: `Step 2 failed: ${(e as Error).message}` }, 502);

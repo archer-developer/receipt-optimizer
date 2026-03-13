@@ -45,19 +45,19 @@ receiptsRouter.delete("/:id", async (c) => {
   return c.body(null, 204);
 });
 
-// POST /api/receipts/:id/items  { title: string, value: string }
+// POST /api/receipts/:id/items  { title: string, value: string, note?: string }
 receiptsRouter.post("/:id/items", async (c) => {
   const receiptId = Number(c.req.param("id"));
-  const { title, value } = await c.req.json<{ title: string; value: string }>();
-  const [item] = await db.insert(receiptItems).values({ receiptId, title, value }).returning();
+  const { title, value, note } = await c.req.json<{ title: string; value: string; note?: string }>();
+  const [item] = await db.insert(receiptItems).values({ receiptId, title, value, note }).returning();
   return c.json(item, 201);
 });
 
-// PUT /api/receipts/:id/items/:itemId  { title: string, value: string }
+// PUT /api/receipts/:id/items/:itemId  { title: string, value: string, note?: string }
 receiptsRouter.put("/:id/items/:itemId", async (c) => {
   const itemId = Number(c.req.param("itemId"));
-  const { title, value } = await c.req.json<{ title: string; value: string }>();
-  const [item] = await db.update(receiptItems).set({ title, value }).where(eq(receiptItems.id, itemId)).returning();
+  const { title, value, note } = await c.req.json<{ title: string; value: string; note?: string }>();
+  const [item] = await db.update(receiptItems).set({ title, value, note }).where(eq(receiptItems.id, itemId)).returning();
   if (!item) return c.json({ error: "Not found" }, 404);
   return c.json(item);
 });

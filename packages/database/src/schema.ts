@@ -41,12 +41,40 @@ export const receiptItems = pgTable("receipt_items", {
   receiptId: integer("receipt_id").references(() => receipts.id).notNull(),
   title: text("title").notNull(),
   value: text("value").notNull(),
+  note: text("note"),
+});
+
+export const receiptVariants = pgTable("receipt_variants", {
+  id: serial("id").primaryKey(),
+  receiptId: integer("receipt_id").references(() => receipts.id).notNull(),
+  totalPrice: numeric("total_price", { precision: 10, scale: 2 }).notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const receiptVariantItems = pgTable("receipt_variant_items", {
+  id: serial("id").primaryKey(),
+  variantId: integer("variant_id").references(() => receiptVariants.id).notNull(),
+  receiptItemId: integer("receipt_item_id").references(() => receiptItems.id).notNull(),
+  productId: integer("product_id").references(() => products.id).notNull(),
+  price: numeric("price", { precision: 10, scale: 2 }).notNull(),
+  reason: text("reason"),
 });
 
 export const receiptsRelations = relations(receipts, ({ many }) => ({
   items: many(receiptItems),
+  variants: many(receiptVariants),
 }));
 
 export const receiptItemsRelations = relations(receiptItems, ({ one }) => ({
   receipt: one(receipts, { fields: [receiptItems.receiptId], references: [receipts.id] }),
+}));
+
+export const receiptVariantsRelations = relations(receiptVariants, ({ one, many }) => ({
+  receipt: one(receipts, { fields: [receiptVariants.receiptId], references: [receipts.id] }),
+  items: many(receiptVariantItems),
+}));
+
+export const receiptVariantItemsRelations = relations(receiptVariantItems, ({ one }) => ({
+  variant: one(receiptVariants, { fields: [receiptVariantItems.variantId], references: [receiptVariants.id] }),
+  product: one(products, { fields: [receiptVariantItems.productId], references: [products.id] }),
 }));
