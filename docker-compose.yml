@@ -1,0 +1,65 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-receipt_optimizer}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: packages/api/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-receipt_optimizer}
+      API_PORT: 3000
+      API_HOST: 0.0.0.0
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./packages/api/src:/app/packages/api/src
+      - ./packages/database/src:/app/packages/database/src
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  ui:
+    build:
+      context: packages/ui
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./packages/ui/public:/usr/share/nginx/html
+    depends_on:
+      - api
+
+  # One-shot service to run a parser manually:
+  #   docker compose run --rm parser pnpm --filter @receipt-optimizer/parsers parse:green
+  parser:
+    build:
+      context: .
+      dockerfile: packages/parsers/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-receipt_optimizer}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles:
+      - parsers   # not started by default; run explicitly
+
+volumes:
+  postgres_data:

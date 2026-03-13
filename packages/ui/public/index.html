@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Receipt Optimizer</title>
+  <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body x-data="app()" x-init="init()">
+  <header>
+    <h1>Receipt Optimizer</h1>
+    <nav>
+      <a href="#settings" :class="{ active: page === 'settings' }">Settings</a>
+      <a href="#receipts" :class="{ active: page === 'receipts' || page === 'receipt-form' }">Receipts</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- Settings -->
+    <div x-show="page === 'settings'">
+
+      <section x-data="shopsManager()">
+        <h2>Shops</h2>
+        <form @submit.prevent="create">
+          <input type="text" x-model="newName" placeholder="Shop name…" required />
+          <button type="submit">Add shop</button>
+        </form>
+        <ul>
+          <template x-for="shop in shops" :key="shop.id">
+            <li>
+              <span x-text="shop.name"></span>
+              <div class="row-actions">
+                <button class="btn-danger" @click="remove(shop.id)">Delete</button>
+              </div>
+            </li>
+          </template>
+          <li x-show="shops.length === 0" class="empty">No shops yet.</li>
+        </ul>
+      </section>
+
+      <section x-data="categoriesManager()">
+        <h2>Categories</h2>
+        <form @submit.prevent="create">
+          <select x-model="selectedShopId" required>
+            <option value="">Select shop…</option>
+            <template x-for="shop in shops" :key="shop.id">
+              <option :value="shop.id" x-text="shop.name"></option>
+            </template>
+          </select>
+          <input type="text" x-model="newOriginId" placeholder="Origin ID…" required />
+          <input type="text" x-model="newTitle" placeholder="Category title…" required />
+          <button type="submit">Add category</button>
+        </form>
+        <div class="filter-row">
+          <label>Filter by shop:</label>
+          <select x-model="filterShopId" @change="load">
+            <option value="">All shops</option>
+            <template x-for="shop in shops" :key="shop.id">
+              <option :value="shop.id" x-text="shop.name"></option>
+            </template>
+          </select>
+        </div>
+        <ul>
+          <template x-for="cat in categories" :key="cat.id">
+            <li>
+              <span x-text="cat.title"></span>
+              <span class="tag" x-text="cat.originId"></span>
+              <div class="row-actions">
+                <button class="btn-danger" @click="remove(cat.id)">Delete</button>
+              </div>
+            </li>
+          </template>
+          <li x-show="categories.length === 0" class="empty">No categories yet.</li>
+        </ul>
+      </section>
+
+    </div>
+
+    <!-- Receipts list -->
+    <div x-show="page === 'receipts'" x-data="receiptsManager()">
+      <section>
+        <div class="section-header">
+          <h2>Receipts</h2>
+          <button @click="window.location.hash = 'receipts/new'">+ New receipt</button>
+        </div>
+        <ul>
+          <template x-for="receipt in receipts" :key="receipt.id">
+            <li>
+              <span x-text="receipt.title"></span>
+              <div class="row-actions">
+                <button @click="window.location.hash = 'receipts/' + receipt.id">Edit</button>
+                <button class="btn-danger" @click="confirmRemove(receipt)">Delete</button>
+              </div>
+            </li>
+          </template>
+          <li x-show="receipts.length === 0" class="empty">No receipts yet.</li>
+        </ul>
+      </section>
+
+      <!-- Delete confirmation dialog -->
+      <div class="overlay" x-show="confirm.visible">
+        <div class="dialog">
+          <p>Are you sure you want to delete the receipt?</p>
+          <div class="dialog-actions">
+            <button class="btn-secondary" @click="confirm.visible = false">Cancel</button>
+            <button class="btn-danger" @click="remove()">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Receipt form (create / edit) -->
+    <div x-show="page === 'receipt-form'" x-data="receiptForm()">
+      <section>
+        <div class="section-header">
+          <h2 x-text="receiptId ? 'Edit receipt' : 'New receipt'"></h2>
+          <a href="#receipts" class="btn-secondary">Back to list</a>
+        </div>
+
+        <form @submit.prevent="save" class="form-block">
+          <label>Title</label>
+          <div class="form-row">
+            <input type="text" x-model="title" placeholder="Receipt title…" required />
+            <button type="submit" x-text="receiptId ? 'Save' : 'Create'"></button>
+          </div>
+        </form>
+
+        <template x-if="receiptId">
+          <div>
+            <h3>Items</h3>
+            <form @submit.prevent="addItem" class="form-block">
+              <div class="form-row">
+                <input type="text" x-model="newItemTitle" placeholder="Item title…" required />
+                <input type="text" x-model="newItemValue" placeholder="Value…" required />
+                <button type="submit">Add item</button>
+              </div>
+            </form>
+            <ul>
+              <template x-for="item in items" :key="item.id">
+                <li class="item-row">
+                  <input type="text" x-model="item.title" @change="updateItem(item)" />
+                  <input type="text" x-model="item.value" @change="updateItem(item)" class="input-small" />
+                  <button class="btn-danger" @click="removeItem(item.id)">Delete</button>
+                </li>
+              </template>
+              <li x-show="items.length === 0" class="empty">No items yet.</li>
+            </ul>
+
+            <div class="optimize-bar">
+              <button @click="optimize" :disabled="optimizing" class="btn-optimize">
+                <span x-show="!optimizing">Optimize with AI</span>
+                <span x-show="optimizing">Thinking…</span>
+              </button>
+              <span x-show="optimizeError" class="error-text" x-text="optimizeError"></span>
+            </div>
+
+            <template x-if="suggestions.length > 0">
+              <div>
+                <h3>AI Suggestions</h3>
+                <ul class="suggestions">
+                  <template x-for="s in suggestions" :key="s.receiptItemId">
+                    <li class="suggestion-row">
+                      <div class="suggestion-item">
+                        <span class="suggestion-label" x-text="s.receiptItemTitle"></span>
+                        <span class="suggestion-arrow">→</span>
+                        <div class="suggestion-product">
+                          <strong x-text="s.productTitle"></strong>
+                          <span class="tag" x-text="s.categoryTitle"></span>
+                          <span class="price" x-text="s.price + ' BYN'"></span>
+                        </div>
+                      </div>
+                      <div class="suggestion-reason" x-text="s.reason"></div>
+                    </li>
+                  </template>
+                </ul>
+              </div>
+            </template>
+          </div>
+        </template>
+      </section>
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

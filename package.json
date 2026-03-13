@@ -1,0 +1,13 @@
+{
+  "name": "receipt-optimizer",
+  "private": true,
+  "scripts": {
+    "dev:api": "pnpm --filter api dev",
+    "db:generate": "pnpm --filter database db:generate",
+    "db:migrate": "pnpm --filter database db:migrate",
+    "db:studio": "pnpm --filter database db:studio"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
