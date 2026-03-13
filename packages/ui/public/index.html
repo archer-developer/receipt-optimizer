@@ -126,9 +126,12 @@
         <h3>Items</h3>
         <ul>
           <template x-for="item in items" :key="item.id">
-            <li>
-              <span x-text="item.title"></span>
-              <span class="tag" x-text="item.value"></span>
+            <li class="item-detail-row">
+              <div class="item-detail-main">
+                <span x-text="item.title"></span>
+                <span class="tag" x-text="item.value"></span>
+              </div>
+              <div class="item-detail-note" x-show="item.note" x-text="item.note"></div>
             </li>
           </template>
           <li x-show="items.length === 0" class="empty">No items yet.</li>
@@ -178,13 +181,6 @@
           <ul class="variants">
             <template x-for="v in variants" :key="v.id">
               <li class="variant-row">
-                <div class="variant-header">
-                  <span class="variant-date" x-text="formatDate(v.createdAt)"></span>
-                  <span class="price">Total: <strong x-text="v.totalPrice + ' BYN'"></strong></span>
-                  <div class="row-actions">
-                    <button class="btn-danger" @click="deleteVariant(v.id)">Delete</button>
-                  </div>
-                </div>
                 <ul class="variant-items">
                   <template x-for="item in v.items" :key="item.id">
                     <li>
@@ -193,6 +189,18 @@
                     </li>
                   </template>
                 </ul>
+                <div class="variant-footer">
+                  <span class="variant-date" x-text="formatDate(v.createdAt)"></span>
+                  <span class="price">Total: <strong x-text="v.totalPrice + ' BYN'"></strong></span>
+                  <div class="row-actions">
+                    <button class="btn-danger btn-icon" @click="deleteVariant(v.id)" title="Delete">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="btn-label">Delete</span>
+                    </button>
+                  </div>
+                </div>
               </li>
             </template>
           </ul>

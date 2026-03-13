@@ -110,7 +110,7 @@ a.btn-secondary {
   white-space: nowrap;
 }
 
-.btn-danger { background: #dc2626; padding: 0.25rem 0.75rem; font-size: 0.875rem; }
+.btn-danger { background: #dc2626; padding: 0.5rem 1.1rem; font-size: 1rem; }
 .btn-danger:hover { background: #b91c1c; }
 
 .btn-secondary { background: #6b7280; }
@@ -149,6 +149,10 @@ form { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
 }
 
 .empty { color: #9ca3af; font-style: italic; }
+
+.item-detail-row { flex-direction: column; align-items: flex-start; gap: 0.15rem; }
+.item-detail-main { display: flex; align-items: center; gap: 0.5rem; }
+.item-detail-note { font-size: 0.8rem; color: #6b7280; }
 
 .item-row { gap: 0.5rem; flex-wrap: nowrap; }
 .item-row input { flex: 1; max-width: none; min-width: 0; }
@@ -197,19 +201,30 @@ form { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
 
 .variants { display: flex; flex-direction: column; gap: 0.75rem; }
 .variant-row {
+  display: block;
   border: 1px solid #e5e7eb;
   border-radius: 6px;
   padding: 0.75rem;
 }
-.variant-header {
+.variant-footer {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e5e7eb;
 }
-.variant-date { font-size: 0.85rem; color: #6b7280; flex: 1; }
+.variant-date { font-size: 0.85rem; color: #6b7280; flex: 1; min-width: 0; }
 .variant-items { padding-left: 0.5rem; }
 .variant-items li { font-size: 0.9rem; display: flex; gap: 0.5rem; justify-content: space-between; }
+
+/* Icon buttons */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.btn-icon svg { flex-shrink: 0; }
 
 /* Delete confirmation overlay */
 .overlay {
@@ -312,4 +327,6 @@ form { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
   }
 
   /* Buttons in dialog actions stay side by side (no change needed) */
+
+  /* Icon buttons on mobile: label remains visible alongside the icon */
 }
