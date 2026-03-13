@@ -88,7 +88,7 @@ Return ONLY a JSON array. Each element must have:
     const lines = itemProducts
       .map((p) => `  [id:${p.productId}] ${p.productTitle}${p.volume ? ` | ${p.volume}` : ""} | ${p.price} BYN`)
       .join("\n");
-    return `[id:${it.id}] ${it.title}: ${it.value}\n${lines}`;
+    return `[id:${it.id}] ${it.title}: ${it.value}${it.note ? ` (note: ${it.note})` : ""}\n${lines}`;
   }).join("\n\n");
 
   const step2Prompt = `You are a shopping assistant. For each receipt item, pick the single best matching product from its candidate list, optimizing for price/value ratio.

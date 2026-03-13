@@ -25,14 +25,26 @@
         <h2>Shops</h2>
         <form @submit.prevent="create">
           <input type="text" x-model="newName" placeholder="Shop name…" required />
-          <button type="submit">Add shop</button>
+          <button type="submit" class="btn-icon">
+            <!-- plus-circle -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-11.25a.75.75 0 0 0-1.5 0v2.5h-2.5a.75.75 0 0 0 0 1.5h2.5v2.5a.75.75 0 0 0 1.5 0v-2.5h2.5a.75.75 0 0 0 0-1.5h-2.5v-2.5Z" clip-rule="evenodd" />
+            </svg>
+            <span class="btn-label btn-always-label">Add shop</span>
+          </button>
         </form>
         <ul>
           <template x-for="shop in shops" :key="shop.id">
             <li>
               <span x-text="shop.name"></span>
               <div class="row-actions">
-                <button class="btn-danger" @click="remove(shop.id)">Delete</button>
+                <button class="btn-danger btn-icon" @click="remove(shop.id)">
+                  <!-- trash -->
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" clip-rule="evenodd" />
+                  </svg>
+                  <span class="btn-label">Delete</span>
+                </button>
               </div>
             </li>
           </template>
@@ -51,7 +63,13 @@
           </select>
           <input type="text" x-model="newOriginId" placeholder="Origin ID…" required />
           <input type="text" x-model="newTitle" placeholder="Category title…" required />
-          <button type="submit">Add category</button>
+          <button type="submit" class="btn-icon">
+            <!-- plus-circle -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-11.25a.75.75 0 0 0-1.5 0v2.5h-2.5a.75.75 0 0 0 0 1.5h2.5v2.5a.75.75 0 0 0 1.5 0v-2.5h2.5a.75.75 0 0 0 0-1.5h-2.5v-2.5Z" clip-rule="evenodd" />
+            </svg>
+            <span class="btn-label btn-always-label">Add category</span>
+          </button>
         </form>
         <div class="filter-row">
           <label>Filter by shop:</label>
@@ -68,7 +86,13 @@
               <span x-text="cat.title"></span>
               <span class="tag" x-text="cat.originId"></span>
               <div class="row-actions">
-                <button class="btn-danger" @click="remove(cat.id)">Delete</button>
+                <button class="btn-danger btn-icon" @click="remove(cat.id)">
+                  <!-- trash -->
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" clip-rule="evenodd" />
+                  </svg>
+                  <span class="btn-label">Delete</span>
+                </button>
               </div>
             </li>
           </template>
@@ -83,16 +107,43 @@
       <section>
         <div class="section-header">
           <h2>Receipts</h2>
-          <button @click="window.location.hash = 'receipts/new'">+ New receipt</button>
+          <button class="btn-icon" @click="window.location.hash = 'receipts/new'">
+            <!-- document-plus -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+              <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.69L6.03 8.22a.75.75 0 0 0-1.06 1.06l4.5 4.5a.75.75 0 0 0 1.06 0l4.5-4.5a.75.75 0 0 0-1.06-1.06l-3.22 3.22V2.75Z" />
+              <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
+            </svg>
+            <span class="btn-label">New receipt</span>
+          </button>
         </div>
         <ul>
           <template x-for="receipt in receipts" :key="receipt.id">
             <li>
               <span x-text="receipt.title"></span>
               <div class="row-actions">
-                <button @click="window.location.hash = 'receipts/' + receipt.id">View</button>
-                <button @click="window.location.hash = 'receipts/' + receipt.id + '/edit'">Edit</button>
-                <button class="btn-danger" @click="confirmRemove(receipt)">Delete</button>
+                <button class="btn-icon" @click="window.location.hash = 'receipts/' + receipt.id">
+                  <!-- eye -->
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+                    <path d="M10 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
+                    <path fill-rule="evenodd" d="M.664 10.59a1.651 1.651 0 0 1 0-1.186A10.004 10.004 0 0 1 10 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0 1 10 17c-4.257 0-7.893-2.66-9.336-6.41ZM14 10a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z" clip-rule="evenodd" />
+                  </svg>
+                  <span class="btn-label">View</span>
+                </button>
+                <button class="btn-icon" @click="window.location.hash = 'receipts/' + receipt.id + '/edit'">
+                  <!-- pencil -->
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+                    <path d="m5.433 13.917 1.262-3.155A4 4 0 0 1 7.58 9.42l6.92-6.918a2.121 2.121 0 0 1 3 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 0 1-.65-.65Z" />
+                    <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0 0 10 3H4.75A2.75 2.75 0 0 0 2 5.75v9.5A2.75 2.75 0 0 0 4.75 18h9.5A2.75 2.75 0 0 0 17 15.25V10a.75.75 0 0 0-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5Z" />
+                  </svg>
+                  <span class="btn-label">Edit</span>
+                </button>
+                <button class="btn-danger btn-icon" @click="confirmRemove(receipt)">
+                  <!-- trash -->
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" clip-rule="evenodd" />
+                  </svg>
+                  <span class="btn-label">Delete</span>
+                </button>
               </div>
             </li>
           </template>
@@ -105,8 +156,20 @@
         <div class="dialog">
           <p>Are you sure you want to delete the receipt?</p>
           <div class="dialog-actions">
-            <button class="btn-secondary" @click="confirm.visible = false">Cancel</button>
-            <button class="btn-danger" @click="remove()">Delete</button>
+            <button class="btn-secondary btn-icon" @click="confirm.visible = false">
+              <!-- x-mark -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+                <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+              </svg>
+              <span class="btn-label">Cancel</span>
+            </button>
+            <button class="btn-danger btn-icon" @click="remove()">
+              <!-- trash -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+                <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" clip-rule="evenodd" />
+              </svg>
+              <span class="btn-label">Delete</span>
+            </button>
           </div>
         </div>
       </div>
@@ -118,8 +181,21 @@
         <div class="section-header">
           <h2 x-text="title"></h2>
           <div class="row-actions">
-            <button @click="window.location.hash = 'receipts/' + receiptId + '/edit'">Edit</button>
-            <a href="#receipts" class="btn-secondary">Back to list</a>
+            <button class="btn-icon" @click="window.location.hash = 'receipts/' + receiptId + '/edit'">
+              <!-- pencil -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+                <path d="m5.433 13.917 1.262-3.155A4 4 0 0 1 7.58 9.42l6.92-6.918a2.121 2.121 0 0 1 3 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 0 1-.65-.65Z" />
+                <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0 0 10 3H4.75A2.75 2.75 0 0 0 2 5.75v9.5A2.75 2.75 0 0 0 4.75 18h9.5A2.75 2.75 0 0 0 17 15.25V10a.75.75 0 0 0-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5Z" />
+              </svg>
+              <span class="btn-label">Edit</span>
+            </button>
+            <a href="#receipts" class="btn-secondary btn-icon">
+              <!-- arrow-left -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+                <path fill-rule="evenodd" d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z" clip-rule="evenodd" />
+              </svg>
+              <span class="btn-label">Back to list</span>
+            </a>
           </div>
         </div>
 
@@ -138,9 +214,13 @@
         </ul>
 
         <div class="optimize-bar">
-          <button @click="optimize" :disabled="optimizing" class="btn-optimize">
-            <span x-show="!optimizing">Optimize with AI</span>
-            <span x-show="optimizing">Thinking…</span>
+          <button @click="optimize" :disabled="optimizing" class="btn-optimize btn-icon">
+            <!-- sparkles -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+              <path fill-rule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.83-4.4Z" clip-rule="evenodd" />
+            </svg>
+            <span class="btn-label btn-always-label" x-show="!optimizing">Optimize with AI</span>
+            <span class="btn-label btn-always-label" x-show="optimizing">Thinking…</span>
           </button>
           <span x-show="optimizeError" class="error-text" x-text="optimizeError"></span>
         </div>
@@ -166,9 +246,13 @@
             </ul>
             <div class="suggestion-footer">
               <span class="price">Total: <strong x-text="suggestionsTotal + ' BYN'"></strong></span>
-              <button @click="saveVariant" :disabled="savingVariant">
-                <span x-show="!savingVariant">Save proposition</span>
-                <span x-show="savingVariant">Saving…</span>
+              <button @click="saveVariant" :disabled="savingVariant" class="btn-icon">
+                <!-- cloud-arrow-up -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M5.5 17a4.5 4.5 0 0 1-1.44-8.765 4.5 4.5 0 0 1 8.302-3.046 3.5 3.5 0 0 1 4.504 4.272A4 4 0 0 1 15 17H5.5Zm3.75-2.75a.75.75 0 0 0 1.5 0V9.66l1.95 2.1a.75.75 0 1 0 1.1-1.02l-3.25-3.5a.75.75 0 0 0-1.1 0L6.2 10.74a.75.75 0 1 0 1.1 1.02l1.95-2.1v4.59Z" clip-rule="evenodd" />
+                </svg>
+                <span class="btn-label" x-show="!savingVariant">Save proposition</span>
+                <span class="btn-label" x-show="savingVariant">Saving…</span>
               </button>
             </div>
           </div>
@@ -183,9 +267,12 @@
               <li class="variant-row">
                 <ul class="variant-items">
                   <template x-for="item in v.items" :key="item.id">
-                    <li>
-                      <span x-text="item.product.title"></span>
-                      <span class="price" x-text="item.price + ' BYN'"></span>
+                    <li class="variant-item">
+                      <div class="variant-item-main">
+                        <span x-text="item.product.title"></span>
+                        <span class="price" x-text="item.price + ' BYN'"></span>
+                      </div>
+                      <div class="variant-item-reason" x-show="item.reason" x-text="item.reason"></div>
                     </li>
                   </template>
                 </ul>
@@ -194,7 +281,7 @@
                   <span class="price">Total: <strong x-text="v.totalPrice + ' BYN'"></strong></span>
                   <div class="row-actions">
                     <button class="btn-danger btn-icon" @click="deleteVariant(v.id)" title="Delete">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20" aria-hidden="true">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
                         <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" clip-rule="evenodd" />
                       </svg>
                       <span class="btn-label">Delete</span>
@@ -213,8 +300,12 @@
       <section>
         <div class="section-header">
           <h2 x-text="receiptId ? 'Edit receipt' : 'New receipt'"></h2>
-          <a :href="receiptId ? '#receipts/' + receiptId : '#receipts'" class="btn-secondary">
-            <span x-text="receiptId ? 'Back to details' : 'Back to list'"></span>
+          <a :href="receiptId ? '#receipts/' + receiptId : '#receipts'" class="btn-secondary btn-icon">
+            <!-- arrow-left -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+              <path fill-rule="evenodd" d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z" clip-rule="evenodd" />
+            </svg>
+            <span class="btn-label" x-text="receiptId ? 'Back to details' : 'Back to list'"></span>
           </a>
         </div>
 
@@ -222,7 +313,13 @@
           <label>Title</label>
           <div class="form-row">
             <input type="text" x-model="title" placeholder="Receipt title…" required />
-            <button type="submit" x-text="receiptId ? 'Save' : 'Create'"></button>
+            <button type="submit" class="btn-icon">
+              <!-- check (save) or plus (create) rendered via x-show on the label only; icon stays constant -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+              </svg>
+              <span class="btn-label btn-always-label" x-text="receiptId ? 'Save' : 'Create'"></span>
+            </button>
           </div>
         </form>
 
@@ -234,7 +331,13 @@
                 <input type="text" x-model="newItemTitle" placeholder="Item title…" required />
                 <input type="text" x-model="newItemValue" placeholder="Value…" required />
                 <input type="text" x-model="newItemNote" placeholder="Note… (optional)" class="input-note" />
-                <button type="submit">Add item</button>
+                <button type="submit" class="btn-icon">
+                  <!-- plus-circle -->
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-11.25a.75.75 0 0 0-1.5 0v2.5h-2.5a.75.75 0 0 0 0 1.5h2.5v2.5a.75.75 0 0 0 1.5 0v-2.5h2.5a.75.75 0 0 0 0-1.5h-2.5v-2.5Z" clip-rule="evenodd" />
+                  </svg>
+                  <span class="btn-label btn-always-label">Add item</span>
+                </button>
               </div>
             </form>
             <ul>
@@ -243,7 +346,13 @@
                   <input type="text" x-model="item.title" @change="updateItem(item)" />
                   <input type="text" x-model="item.value" @change="updateItem(item)" class="input-small" />
                   <input type="text" x-model="item.note" @change="updateItem(item)" placeholder="Note…" class="input-note" />
-                  <button class="btn-danger" @click="removeItem(item.id)">Delete</button>
+                  <button class="btn-danger btn-icon" @click="removeItem(item.id)">
+                    <!-- trash -->
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="btn-label">Delete</span>
+                  </button>
                 </li>
               </template>
               <li x-show="items.length === 0" class="empty">No items yet.</li>

@@ -216,7 +216,9 @@ form { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
 }
 .variant-date { font-size: 0.85rem; color: #6b7280; flex: 1; min-width: 0; }
 .variant-items { padding-left: 0.5rem; }
-.variant-items li { font-size: 0.9rem; display: flex; gap: 0.5rem; justify-content: space-between; }
+.variant-item { font-size: 0.9rem; display: flex; flex-direction: column; gap: 0.15rem; }
+.variant-item-main { display: flex; gap: 0.5rem; justify-content: space-between; }
+.variant-item-reason { font-size: 0.8rem; color: #6b7280; }
 
 /* Icon buttons */
 .btn-icon {
@@ -225,6 +227,12 @@ form { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
   gap: 0.35rem;
 }
 .btn-icon svg { flex-shrink: 0; }
+/* a elements styled as buttons also need inline-flex when carrying an icon */
+a.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
 
 /* Delete confirmation overlay */
 .overlay {
@@ -283,7 +291,8 @@ form { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
     flex-direction: column;
     flex-wrap: nowrap;
   }
-  form button { width: 100%; }
+  /* Icon-only buttons in forms should shrink to fit, not stretch full-width */
+  form button:not(.btn-icon) { width: 100%; }
 
   .form-inline {
     flex-direction: column;
@@ -302,7 +311,7 @@ form { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
     flex-direction: column;
     flex-wrap: nowrap;
   }
-  .form-row button { width: 100%; }
+  .form-row button:not(.btn-icon) { width: 100%; }
 
   /* filter-row: stack vertically */
   .filter-row {
@@ -328,5 +337,14 @@ form { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
 
   /* Buttons in dialog actions stay side by side (no change needed) */
 
-  /* Icon buttons on mobile: label remains visible alongside the icon */
+  /* Icon buttons on mobile: hide text label, show icon only */
+  .btn-label { display: none; }
+  /* Exception: force label visible even on mobile */
+  .btn-always-label { display: inline; }
+
+  /* Icon-only buttons: tighten padding so they stay compact */
+  button.btn-icon,
+  a.btn-icon {
+    padding: 0.5rem 0.65rem;
+  }
 }
