@@ -60,6 +60,10 @@ window.LOCALES['en'] = {
     priceUpdated:       "price updated",
   },
 
+  propositions: {
+    inactive: "unavailable",
+  },
+
   receiptForm: {
     headingEdit:           "Edit receipt",
     headingNew:            "New receipt",

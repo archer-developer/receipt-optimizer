@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { db, receipts, products, categories } from "@receipt-optimizer/database";
-import { eq, inArray } from "drizzle-orm";
+import { eq, inArray, and } from "drizzle-orm";
 import { callLLM, parseJsonArray } from "../llm.js";
 
 export const optimizeRouter = new Hono();
@@ -75,7 +75,7 @@ Return ONLY a JSON array. Each element must have:
     })
     .from(products)
     .innerJoin(categories, eq(products.categoryId, categories.id))
-    .where(inArray(products.categoryId, selectedCategoryIds));
+    .where(and(inArray(products.categoryId, selectedCategoryIds), eq(products.status, "active")));
 
   if (!filteredProducts.length) return c.json({ error: "No products found in selected categories" }, 400);
 

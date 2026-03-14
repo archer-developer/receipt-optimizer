@@ -60,6 +60,10 @@ window.LOCALES['be'] = {
     priceUpdated:        "цана абноўлена",
   },
 
+  propositions: {
+    inactive: "недаступна",
+  },
+
   receiptForm: {
     headingEdit:           "Рэдагаваць чэк",
     headingNew:            "Новы чэк",

@@ -294,10 +294,15 @@
               <li class="variant-row">
                 <ul class="variant-items">
                   <template x-for="item in v.items" :key="item.id">
-                    <li class="variant-item">
+                    <li class="variant-item" :class="{ 'variant-item--inactive': item.product.status !== 'active' }">
                       <div class="variant-item-main">
                         <span class="variant-item-title">
                           <span x-text="item.product.title"></span>
+                          <span
+                            x-show="item.product.status !== 'active'"
+                            class="variant-item-inactive-badge"
+                            x-text="t('propositions.inactive')"
+                          ></span>
                           <a
                             x-show="item.product.slug"
                             :href="'https://green-dostavka.by/product/' + item.product.slug + '/'"
