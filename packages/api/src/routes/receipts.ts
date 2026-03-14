@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import { db, receipts, receiptItems } from "@receipt-optimizer/database";
-import { eq } from "drizzle-orm";
+import { db, receipts, receiptItems, receiptVariants, receiptVariantItems } from "@receipt-optimizer/database";
+import { eq, inArray } from "drizzle-orm";
 
 export const receiptsRouter = new Hono();
 
@@ -40,6 +40,12 @@ receiptsRouter.put("/:id", async (c) => {
 // DELETE /api/receipts/:id
 receiptsRouter.delete("/:id", async (c) => {
   const id = Number(c.req.param("id"));
+  const variants = await db.query.receiptVariants.findMany({ where: eq(receiptVariants.receiptId, id) });
+  if (variants.length > 0) {
+    const variantIds = variants.map((v) => v.id);
+    await db.delete(receiptVariantItems).where(inArray(receiptVariantItems.variantId, variantIds));
+    await db.delete(receiptVariants).where(inArray(receiptVariants.id, variantIds));
+  }
   await db.delete(receiptItems).where(eq(receiptItems.receiptId, id));
   await db.delete(receipts).where(eq(receipts.id, id));
   return c.body(null, 204);
@@ -65,6 +71,7 @@ receiptsRouter.put("/:id/items/:itemId", async (c) => {
 // DELETE /api/receipts/:id/items/:itemId
 receiptsRouter.delete("/:id/items/:itemId", async (c) => {
   const itemId = Number(c.req.param("itemId"));
+  await db.delete(receiptVariantItems).where(eq(receiptVariantItems.receiptItemId, itemId));
   await db.delete(receiptItems).where(eq(receiptItems.id, itemId));
   return c.body(null, 204);
 });

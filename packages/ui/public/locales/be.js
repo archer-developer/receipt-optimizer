@@ -5,7 +5,7 @@ window.LOCALES = window.LOCALES || {};
 window.LOCALES['be'] = {
   nav: {
     settings: "Налады",
-    receipts: "Чэкі",
+    receipts: "Рэцэпты",
   },
 
   common: {
@@ -36,13 +36,13 @@ window.LOCALES['be'] = {
   },
 
   receipts: {
-    heading:    "Чэкі",
-    newButton:  "Новы чэк",
+    heading:    "Рэцэпты",
+    newButton:  "Новы рэцэпт",
     viewButton: "Прагледзець",
     editButton: "Рэдагаваць",
-    empty:      "Пакуль няма чэкаў.",
+    empty:      "Пакуль няма рэцэптаў.",
 
-    confirmDelete: "Вы ўпэўнены, што хочаце выдаліць чэк?",
+    confirmDelete: "Вы ўпэўнены, што хочаце выдаліць рэцэпт?",
   },
 
   receiptDetails: {
@@ -67,12 +67,12 @@ window.LOCALES['be'] = {
   },
 
   receiptForm: {
-    headingEdit:           "Рэдагаваць чэк",
-    headingNew:            "Новы чэк",
+    headingEdit:           "Рэдагаваць рэцэпт",
+    headingNew:            "Новы рэцэпт",
     backToDetails:         "Назад да дэталяў",
     backToList:            "Назад да спісу",
     titleLabel:            "Назва",
-    titlePlaceholder:      "Назва чэка\u2026",
+    titlePlaceholder:      "Назва рэцэпта\u2026",
     saveButton:            "Захаваць",
     createButton:          "Стварыць",
     itemsHeading:          "Тавары",
