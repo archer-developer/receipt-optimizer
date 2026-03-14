@@ -11,9 +11,9 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body x-data="app()" x-init="init()">
-  <header>
+  <header x-data="{ open: false }">
     <h1>Receipt Optimizer</h1>
-    <nav>
+    <nav class="header-nav">
       <a href="#settings" :class="{ active: page === 'settings' }" x-text="t('nav.settings')"></a>
       <a href="#receipts" :class="{ active: ['receipts','receipt-details','receipt-form'].includes(page) }" x-text="t('nav.receipts')"></a>
     </nav>
@@ -26,6 +26,27 @@
           x-text="lang.label"
         ></button>
       </template>
+    </div>
+    <button class="burger-btn" @click="open = !open" :aria-expanded="open" aria-label="Toggle menu">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="22" height="22" aria-hidden="true">
+        <path fill-rule="evenodd" d="M2 4.75A.75.75 0 0 1 2.75 4h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 4.75Zm0 10.5a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1-.75-.75ZM2 10a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 10Z" clip-rule="evenodd" />
+      </svg>
+    </button>
+    <div class="mobile-menu" x-show="open" @click.outside="open = false">
+      <nav class="mobile-nav">
+        <a href="#settings" :class="{ active: page === 'settings' }" x-text="t('nav.settings')" @click="open = false"></a>
+        <a href="#receipts" :class="{ active: ['receipts','receipt-details','receipt-form'].includes(page) }" x-text="t('nav.receipts')" @click="open = false"></a>
+      </nav>
+      <div class="mobile-lang-switcher" x-data="langSwitcher()">
+        <template x-for="lang in languages" :key="lang.code">
+          <button
+            class="btn-lang"
+            :class="{ 'btn-lang-active': current === lang.code }"
+            @click="select(lang.code)"
+            x-text="lang.label"
+          ></button>
+        </template>
+      </div>
     </div>
   </header>
 

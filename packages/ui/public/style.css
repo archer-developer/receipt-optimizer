@@ -379,12 +379,76 @@ a.btn-icon {
   border-color: rgba(255, 255, 255, 0.7);
 }
 
-@media (max-width: 600px) {
-  /* Header: stack vertically, tighten padding */
+/* Burger button — hidden on desktop, shown on mobile */
+.burger-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #fff;
+  padding: 0.35rem 0.45rem;
+  margin-left: auto;
+  cursor: pointer;
+  border-radius: 4px;
+  line-height: 0;
+}
+.burger-btn:hover { background: rgba(255,255,255,0.15); }
+
+/* Mobile dropdown menu — hidden by default, shown via Alpine x-show */
+.mobile-menu {
+  display: none; /* overridden to block by media query; Alpine x-show then controls visibility */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #1d4ed8;
+  padding: 0.75rem 1.25rem 1rem;
+  z-index: 50;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.mobile-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.mobile-nav a {
+  color: #fff;
+  text-decoration: none;
+  padding: 0.55rem 0.75rem;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+.mobile-nav a:hover { background: rgba(255,255,255,0.2); }
+.mobile-nav a.active { background: rgba(255,255,255,0.25); font-weight: 600; }
+
+.mobile-lang-switcher {
+  display: flex;
+  gap: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  /* Position header relatively so the absolute mobile-menu can anchor to it */
   header {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0.75rem 1rem;
+    position: relative;
+  }
+
+  /* Hide desktop nav and lang switcher */
+  .header-nav { display: none; }
+  .lang-switcher { display: none; }
+
+  /* Show the burger button */
+  .burger-btn { display: flex; }
+
+  /* Activate the mobile menu container (Alpine x-show will then toggle it) */
+  .mobile-menu { display: block; }
+}
+
+@media (max-width: 600px) {
+  /* Header: keep row layout (h1 + burger), just tighten padding */
+  header {
+    padding: 0.6rem 0.75rem;
     gap: 0.5rem;
   }
 
@@ -392,11 +456,6 @@ a.btn-icon {
   nav a {
     padding: 0.3rem 0.6rem;
     font-size: 0.875rem;
-  }
-
-  /* Lang switcher: remove auto-margin (no longer right-aligned when stacked) */
-  .lang-switcher {
-    margin-left: 0;
   }
 
   /* Main: reduce outer padding */
