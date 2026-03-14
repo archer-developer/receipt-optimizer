@@ -18,6 +18,7 @@ interface StoreProduct {
 
 interface ApiProduct {
   id: number;
+  slug: string | null;
   title: string;
   unit: string | null;
   volume: string | null;
@@ -99,6 +100,7 @@ async function run() {
         await db
           .update(products)
           .set({
+            slug: item.slug,
             title: item.title,
             unit: item.unit,
             volume: item.volume,
@@ -113,6 +115,7 @@ async function run() {
         await db.insert(products).values({
           categoryId: category.id,
           originId,
+          slug: item.slug,
           title: item.title,
           unit: item.unit,
           volume: item.volume,

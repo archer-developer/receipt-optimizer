@@ -19,6 +19,7 @@ export const products = pgTable("products", {
   id: serial("id").primaryKey(),
   categoryId: integer("category_id").references(() => categories.id).notNull(),
   originId: text("origin_id").notNull(),
+  slug: text("slug"),
   title: text("title").notNull(),
   description: text("description"),
   unit: text("unit"),
@@ -59,6 +60,15 @@ export const receiptVariantItems = pgTable("receipt_variant_items", {
   price: numeric("price", { precision: 10, scale: 2 }).notNull(),
   reason: text("reason"),
 });
+
+export const categoriesRelations = relations(categories, ({ one, many }) => ({
+  shop: one(shops, { fields: [categories.shopId], references: [shops.id] }),
+  products: many(products),
+}));
+
+export const productsRelations = relations(products, ({ one }) => ({
+  category: one(categories, { fields: [products.categoryId], references: [categories.id] }),
+}));
 
 export const receiptsRelations = relations(receipts, ({ many }) => ({
   items: many(receiptItems),

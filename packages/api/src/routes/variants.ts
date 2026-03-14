@@ -42,7 +42,7 @@ variantsRouter.get("/", async (c) => {
   const receiptId = Number(c.req.query("receiptId"));
   const rows = await db.query.receiptVariants.findMany({
     where: eq(receiptVariants.receiptId, receiptId),
-    with: { items: { with: { product: true } } },
+    with: { items: { with: { product: { with: { category: true } } } } },
     orderBy: (v, { desc }) => [desc(v.createdAt)],
   });
   return c.json(rows);

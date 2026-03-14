@@ -237,9 +237,22 @@ form { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
   border-top: 1px solid #e5e7eb;
 }
 .variant-date { font-size: 0.85rem; color: #6b7280; flex: 1; min-width: 0; }
-.variant-items { padding-left: 0.5rem; }
-.variant-item { font-size: 0.9rem; display: flex; flex-direction: column; gap: 0.15rem; }
-.variant-item-main { display: flex; gap: 0.5rem; justify-content: space-between; }
+.variant-items { padding-left: 0.5rem; text-align: left; }
+.variant-item { font-size: 0.9rem; display: flex; flex-direction: column; gap: 0.15rem; text-align: left; }
+.variant-item-main { display: flex; gap: 0.5rem; justify-content: space-between; align-items: baseline; text-align: left; width: 100%; }
+.variant-item-main > span:first-child { flex: 1; min-width: 0; }
+.variant-item-title { display: inline-flex; align-items: center; gap: 0.25rem; flex: 1; min-width: 0; }
+.product-ext-link {
+  color: #9ca3af;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  line-height: 1;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.product-ext-link:hover { color: #2563eb; }
+.variant-item-meta { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; text-align: left; width: 100%; }
 .variant-item-reason { font-size: 0.8rem; color: #6b7280; }
 
 /* Price change indicators in saved propositions */
