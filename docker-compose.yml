@@ -31,6 +31,7 @@ services:
       LLM_MODEL: ${LLM_MODEL:-}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      LLM_PROXY_URL: ${LLM_PROXY_URL:-}
     volumes:
       - ./packages/api/src:/app/packages/api/src
       - ./packages/database/src:/app/packages/database/src
@@ -58,6 +59,7 @@ services:
       dockerfile: packages/parsers/Dockerfile
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-receipt_optimizer}
+      LLM_PROXY_URL: ${LLM_PROXY_URL:-}
     depends_on:
       postgres:
         condition: service_healthy
