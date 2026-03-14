@@ -239,7 +239,8 @@ form { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
 .variant-date { font-size: 0.85rem; color: #6b7280; flex: 1; min-width: 0; }
 .variant-items { padding-left: 0.5rem; text-align: left; }
 .variant-item { font-size: 0.9rem; display: flex; flex-direction: column; gap: 0.15rem; text-align: left; }
-.variant-item-main { display: flex; gap: 0.5rem; justify-content: space-between; align-items: baseline; text-align: left; width: 100%; }
+.variant-item-main { display: flex; gap: 0.5rem; justify-content: space-between; align-items: flex-start; text-align: left; width: 100%; }
+.variant-item-price-col { display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem; flex-shrink: 0; }
 .variant-item-main > span:first-child { flex: 1; min-width: 0; }
 .variant-item-title { display: inline-flex; align-items: center; gap: 0.25rem; flex: 1; min-width: 0; }
 .product-ext-link {
@@ -252,6 +253,14 @@ form { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
   transition: color 0.15s;
 }
 .product-ext-link:hover { color: #2563eb; }
+/* When the full title text is wrapped in the link, override to normal text colour with inline-flex layout */
+.product-title-link {
+  color: inherit;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.product-title-link:hover { color: #2563eb; }
 .variant-item-meta { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; text-align: left; width: 100%; }
 .variant-item-reason { font-size: 0.8rem; color: #6b7280; }
 
@@ -269,6 +278,23 @@ form { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
   border: 1px solid #d1d5db;
   border-radius: 4px;
   padding: 0.05rem 0.35rem;
+  white-space: nowrap;
+}
+
+/* Refresh button on variant items */
+.btn-refresh { background: #7c3aed; }
+.btn-refresh:hover { background: #6d28d9; }
+.btn-refresh--spinning svg {
+  animation: btn-spin 0.75s linear infinite;
+}
+@keyframes btn-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.variant-item-refresh-error {
+  font-size: 0.75rem;
+  color: #dc2626;
   white-space: nowrap;
 }
 

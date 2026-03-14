@@ -61,7 +61,9 @@ window.LOCALES['en'] = {
   },
 
   propositions: {
-    inactive: "unavailable",
+    inactive:     "unavailable",
+    refresh:      "Refresh",
+    refreshError: "Failed to refresh",
   },
 
   receiptForm: {

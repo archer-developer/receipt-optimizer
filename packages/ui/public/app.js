@@ -231,6 +231,7 @@ function receiptDetails() {
     optimizeError: "",
     savingVariant: false,
     variants: [],
+    refreshingItems: {},
 
     async init() {
       document.addEventListener("receipt-details-load", (e) => this.load(e.detail.id));
@@ -315,6 +316,33 @@ function receiptDetails() {
     // Returns true when at least one item in the variant has a changed price.
     variantHasPriceChange(variant) {
       return variant.items.some((item) => this.itemPriceChanged(item));
+    },
+
+    async refreshVariantItem(variant, item) {
+      if (this.refreshingItems[item.id]) return;
+      this.refreshingItems[item.id] = true;
+      this.refreshingItems = { ...this.refreshingItems };
+      try {
+        const res = await fetch(
+          `${API}/api/variants/${variant.id}/items/${item.id}/refresh`,
+          { method: "POST" }
+        );
+        if (!res.ok) throw new Error("refresh failed");
+        const data = await res.json();
+        const idx = variant.items.findIndex((i) => i.id === item.id);
+        if (idx !== -1) variant.items[idx] = { ...data.item };
+        variant.totalPrice = data.newTotal;
+      } catch (_e) {
+        this.refreshingItems[item.id + "_err"] = true;
+        this.refreshingItems = { ...this.refreshingItems };
+        setTimeout(() => {
+          delete this.refreshingItems[item.id + "_err"];
+          this.refreshingItems = { ...this.refreshingItems };
+        }, 3000);
+      } finally {
+        delete this.refreshingItems[item.id];
+        this.refreshingItems = { ...this.refreshingItems };
+      }
     },
   };
 }

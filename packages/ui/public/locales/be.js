@@ -61,7 +61,9 @@ window.LOCALES['be'] = {
   },
 
   propositions: {
-    inactive: "недаступна",
+    inactive:     "недаступна",
+    refresh:      "Абнавіць",
+    refreshError: "Памылка абнаўлення",
   },
 
   receiptForm: {

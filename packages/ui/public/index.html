@@ -297,32 +297,48 @@
                     <li class="variant-item" :class="{ 'variant-item--inactive': item.product.status !== 'active' }">
                       <div class="variant-item-main">
                         <span class="variant-item-title">
-                          <span x-text="item.product.title"></span>
-                          <span
-                            x-show="item.product.status !== 'active'"
-                            class="variant-item-inactive-badge"
-                            x-text="t('propositions.inactive')"
-                          ></span>
                           <a
                             x-show="item.product.slug"
                             :href="'https://green-dostavka.by/product/' + item.product.slug + '/'"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="product-ext-link"
+                            class="product-ext-link product-title-link"
                             :title="item.product.title"
                           >
-                            <!-- arrow-top-right-on-square -->
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="13" height="13" aria-hidden="true">
-                              <path fill-rule="evenodd" d="M4.25 5.5a.75.75 0 0 0-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 0 0 .75-.75v-4a.75.75 0 0 1 1.5 0v4A2.25 2.25 0 0 1 12.75 17h-8.5A2.25 2.25 0 0 1 2 14.75v-8.5A2.25 2.25 0 0 1 4.25 4h5a.75.75 0 0 1 0 1.5h-5Z" clip-rule="evenodd" />
-                              <path fill-rule="evenodd" d="M6.194 12.753a.75.75 0 0 0 1.06.053L16.5 4.44v2.81a.75.75 0 0 0 1.5 0v-4.5a.75.75 0 0 0-.75-.75h-4.5a.75.75 0 0 0 0 1.5h2.553l-9.056 8.194a.75.75 0 0 0-.053 1.06Z" clip-rule="evenodd" />
-                            </svg>
+                            <span x-text="item.product.title"></span>
                           </a>
+                          <span x-show="!item.product.slug" x-text="item.product.title"></span>
+                          <span
+                            x-show="item.product.status !== 'active'"
+                            class="variant-item-inactive-badge"
+                            x-text="t('propositions.inactive')"
+                          ></span>
                         </span>
-                        <span class="price" x-show="!itemPriceChanged(item)" x-text="item.price + ' BYN'"></span>
-                        <span class="price price-changed" x-show="itemPriceChanged(item)">
-                          <s class="price-old" x-text="item.price + ' BYN'"></s>
-                          <span class="price-new" x-text="item.product.price + ' BYN'"></span>
-                        </span>
+                        <div class="variant-item-price-col">
+                          <span class="price" x-show="!itemPriceChanged(item)" x-text="item.price + ' BYN'"></span>
+                          <span class="price price-changed" x-show="itemPriceChanged(item)">
+                            <s class="price-old" x-text="item.price + ' BYN'"></s>
+                            <span class="price-new" x-text="item.product.price + ' BYN'"></span>
+                          </span>
+                          <button
+                            type="button"
+                            class="btn-refresh"
+                            :class="{ 'btn-refresh--spinning': refreshingItems[item.id] }"
+                            @click.stop="refreshVariantItem(v, item)"
+                            :title="t('propositions.refresh')"
+                            :aria-label="t('propositions.refresh')"
+                          >
+                            <!-- arrow-path solid (20×20) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" style="display:block;" aria-hidden="true">
+                              <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 0 1-9.201 2.466l-.312-.311h2.433a.75.75 0 0 0 0-1.5H3.989a.75.75 0 0 0-.75.75v4.242a.75.75 0 0 0 1.5 0v-2.43l.31.31a7 7 0 0 0 11.712-3.138.75.75 0 0 0-1.449-.39Zm1.23-3.723a.75.75 0 0 0 .219-.53V2.929a.75.75 0 0 0-1.5 0v2.43l-.31-.31A7 7 0 0 0 3.239 8.188a.75.75 0 1 0 1.448.389A5.5 5.5 0 0 1 13.89 6.11l.311.31h-2.432a.75.75 0 0 0 0 1.5h4.243a.75.75 0 0 0 .53-.219Z" clip-rule="evenodd" />
+                            </svg>
+                          </button>
+                          <span
+                            x-show="refreshingItems[item.id + '_err']"
+                            class="variant-item-refresh-error"
+                            x-text="t('propositions.refreshError')"
+                          ></span>
+                        </div>
                       </div>
                       <div class="variant-item-meta" x-show="item.product.category || item.reason">
                         <span class="tag" x-show="item.product.category" x-text="item.product.category && item.product.category.title"></span>
