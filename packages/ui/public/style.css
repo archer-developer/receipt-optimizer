@@ -467,12 +467,13 @@ a.btn-icon {
 
   main > div { gap: 1rem; }
 
-  /* Section header: stack title and actions vertically */
+  /* Section header: keep title and actions on one line */
   .section-header {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
     gap: 0.5rem;
   }
+  .section-header h2 { flex: 1; min-width: 0; }
 
   /* Forms: stack vertically, full-width inputs */
   form {
