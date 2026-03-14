@@ -140,6 +140,28 @@ form { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
   font-size: 0.9rem;
 }
 
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination-label {
+  font-size: 0.9rem;
+  color: #374151;
+  min-width: 4rem;
+  text-align: center;
+}
+
 .tag {
   font-size: 0.78rem;
   background: #e5e7eb;
@@ -220,6 +242,21 @@ form { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
 .variant-item-main { display: flex; gap: 0.5rem; justify-content: space-between; }
 .variant-item-reason { font-size: 0.8rem; color: #6b7280; }
 
+/* Price change indicators in saved propositions */
+.price-changed { display: inline-flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+.price-old { color: #9ca3af; font-weight: 400; text-decoration: line-through; }
+.price-new { color: #d97706; font-weight: 700; }
+.price-updated-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  border-radius: 4px;
+  padding: 0.05rem 0.35rem;
+  white-space: nowrap;
+}
+
 /* Icon buttons */
 .btn-icon {
   display: inline-flex;
@@ -255,6 +292,37 @@ a.btn-icon {
 .dialog p { margin-top: 0; }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 0.75rem; }
 
+/* Language switcher */
+.lang-switcher {
+  margin-left: auto;
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.btn-lang {
+  padding: 0.25rem 0.55rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 4px;
+  cursor: pointer;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.btn-lang:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+.btn-lang-active {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
 @media (max-width: 600px) {
   /* Header: stack vertically, tighten padding */
   header {
@@ -268,6 +336,11 @@ a.btn-icon {
   nav a {
     padding: 0.3rem 0.6rem;
     font-size: 0.875rem;
+  }
+
+  /* Lang switcher: remove auto-margin (no longer right-aligned when stacked) */
+  .lang-switcher {
+    margin-left: 0;
   }
 
   /* Main: reduce outer padding */

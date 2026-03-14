@@ -1,12 +1,37 @@
 const API = "";
 
-// ── Root app (routing) ────────────────────────────────────────────────────────
+// ── Root app (routing + locale) ───────────────────────────────────────────────
 
 function app() {
   return {
     page: "settings",
+    // Reactive locale revision counter — Alpine re-evaluates t() calls in
+    // templates whenever this value changes.
+    localeRev: 0,
+
+    // Reactive translation helper.  Templates use x-text="t('key')" because
+    // Alpine tracks property access on `this`; reading `this.localeRev` inside
+    // the method is enough to make Alpine re-run the binding on locale change.
+    t(key) {
+      // eslint-disable-next-line no-unused-expressions
+      this.localeRev; // tracked by Alpine
+      return window.__i18nResolve(window.LOCALE, key);
+    },
 
     init() {
+      // Apply locale persisted from a previous session.
+      // LOCALES is already populated by the locale <script> tags at this point.
+      const saved = localStorage.getItem("locale") || "en";
+      if (window.LOCALES[saved]) {
+        window.LOCALE = window.LOCALES[saved];
+        window.__localeCode = saved;
+      }
+
+      // Listen for locale swaps triggered by the switcher component.
+      document.addEventListener("locale-changed", () => {
+        this.localeRev += 1;
+      });
+
       window.addEventListener("hashchange", () => this.applyHash());
       this.applyHash();
     },
@@ -42,6 +67,33 @@ function app() {
         }
         window.location.hash = "settings";
       }
+    },
+  };
+}
+
+// ── Language switcher ─────────────────────────────────────────────────────────
+
+function langSwitcher() {
+  return {
+    // Data-driven list of available languages.
+    // Add more entries here when new locale files are introduced.
+    languages: [
+      { code: "en", label: "EN" },
+      { code: "be", label: "BE" },
+    ],
+
+    current: window.__localeCode || "en",
+
+    init() {
+      document.addEventListener("locale-changed", (e) => {
+        this.current = e.detail.code;
+      });
+    },
+
+    select(code) {
+      if (code === this.current) return;
+      window.setLocale(code);
+      this.current = code;
     },
   };
 }
@@ -87,6 +139,17 @@ function categoriesManager() {
     filterShopId: "",
     newOriginId: "",
     newTitle: "",
+    currentPage: 1,
+    pageSize: 20,
+
+    get totalPages() {
+      return Math.max(1, Math.ceil(this.categories.length / this.pageSize));
+    },
+
+    get pagedCategories() {
+      const start = (this.currentPage - 1) * this.pageSize;
+      return this.categories.slice(start, start + this.pageSize);
+    },
 
     async init() {
       const res = await fetch(`${API}/api/shops`);
@@ -100,6 +163,10 @@ function categoriesManager() {
         : `${API}/api/categories`;
       const res = await fetch(url);
       this.categories = await res.json();
+      // Clamp current page in case items were removed or filter changed
+      if (this.currentPage > this.totalPages) {
+        this.currentPage = this.totalPages;
+      }
     },
 
     async create() {
@@ -111,11 +178,17 @@ function categoriesManager() {
       this.newOriginId = "";
       this.newTitle = "";
       await this.load();
+      // Jump to last page so the newly added item is visible
+      this.currentPage = this.totalPages;
     },
 
     async remove(id) {
       await fetch(`${API}/api/categories/${id}`, { method: "DELETE" });
       await this.load();
+      // load() already clamps, but ensure we don't sit on an empty page
+      if (this.currentPage > this.totalPages) {
+        this.currentPage = this.totalPages;
+      }
     },
   };
 }
@@ -197,7 +270,7 @@ function receiptDetails() {
       try {
         const res = await fetch(`${API}/api/optimize/${this.receiptId}`, { method: "POST" });
         const data = await res.json();
-        if (!res.ok) { this.optimizeError = data.error ?? "Unknown error"; return; }
+        if (!res.ok) { this.optimizeError = data.error ?? t("receiptDetails.unknownError"); return; }
         this.suggestions = data;
       } catch (e) {
         this.optimizeError = e.message;
@@ -224,6 +297,24 @@ function receiptDetails() {
     async deleteVariant(id) {
       await fetch(`${API}/api/variants/${id}`, { method: "DELETE" });
       await this.loadVariants();
+    },
+
+    // Returns true when the saved price on a variant item differs from the
+    // current product price fetched alongside the variant.
+    itemPriceChanged(item) {
+      return parseFloat(item.price) !== parseFloat(item.product.price);
+    },
+
+    // Recalculates the total using current product prices.
+    variantCurrentTotal(variant) {
+      return variant.items
+        .reduce((sum, item) => sum + parseFloat(item.product.price || "0"), 0)
+        .toFixed(2);
+    },
+
+    // Returns true when at least one item in the variant has a changed price.
+    variantHasPriceChange(variant) {
+      return variant.items.some((item) => this.itemPriceChanged(item));
     },
   };
 }
