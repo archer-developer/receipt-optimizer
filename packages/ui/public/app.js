@@ -310,6 +310,15 @@ function receiptDetails() {
       await this.loadVariants();
     },
 
+    productUrl(item) {
+      const shop = item.product.category?.shop;
+      if (!shop) return null;
+      const name = (shop.name || "").toLowerCase();
+      if (name.includes("edostavka")) return `https://edostavka.by/product/${item.product.originId}`;
+      if (name.includes("green") && item.product.slug) return `https://green-dostavka.by/product/${item.product.slug}/`;
+      return null;
+    },
+
     // Returns true when the saved price on a variant item differs from the
     // current product price fetched alongside the variant.
     itemPriceChanged(item) {

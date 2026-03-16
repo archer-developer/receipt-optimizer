@@ -341,8 +341,8 @@
                         <img x-show="item.product.category?.shop?.icon" :src="item.product.category?.shop?.icon" :alt="item.product.category?.shop?.name" class="shop-icon" />
                         <span class="variant-item-title">
                           <a
-                            x-show="item.product.slug"
-                            :href="'https://green-dostavka.by/product/' + item.product.slug + '/'"
+                            x-show="productUrl(item)"
+                            :href="productUrl(item)"
                             target="_blank"
                             rel="noopener noreferrer"
                             class="product-ext-link product-title-link"
@@ -350,7 +350,7 @@
                           >
                             <span x-text="item.product.title"></span>
                           </a>
-                          <span x-show="!item.product.slug" x-text="item.product.title"></span>
+                          <span x-show="!productUrl(item)" x-text="item.product.title"></span>
                           <span
                             x-show="item.product.status !== 'active'"
                             class="variant-item-inactive-badge"
