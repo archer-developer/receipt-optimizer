@@ -4,13 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "parse:green": "tsx src/green.ts"
+    "parse:green": "tsx src/green.ts",
+    "parse:edostavka": "tsx src/edostavka.ts"
   },
   "dependencies": {
     "@receipt-optimizer/database": "workspace:*",
     "drizzle-orm": "^0.30.10",
     "cheerio": "^1.0.0",
-    "playwright": "^1.44.0"
+    "playwright": "^1.44.0",
+    "socks": "^2.8.3"
   },
   "devDependencies": {
     "tsx": "^4.11.2",

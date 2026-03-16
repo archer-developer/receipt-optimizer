@@ -70,6 +70,9 @@ importers:
       playwright:
         specifier: ^1.44.0
         version: 1.58.2
+      socks:
+        specifier: ^2.8.3
+        version: 2.8.7
     devDependencies:
       tsx:
         specifier: ^4.11.2

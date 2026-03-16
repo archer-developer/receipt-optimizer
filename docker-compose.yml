@@ -35,6 +35,8 @@ services:
     volumes:
       - ./packages/api/src:/app/packages/api/src
       - ./packages/database/src:/app/packages/database/src
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       postgres:
         condition: service_healthy
