@@ -4,6 +4,7 @@ import { relations } from "drizzle-orm";
 export const shops = pgTable("shops", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  icon: text("icon"),
 });
 
 export const categories = pgTable("categories", {

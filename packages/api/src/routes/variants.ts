@@ -43,7 +43,7 @@ variantsRouter.get("/", async (c) => {
   const receiptId = Number(c.req.query("receiptId"));
   const rows = await db.query.receiptVariants.findMany({
     where: eq(receiptVariants.receiptId, receiptId),
-    with: { items: { with: { product: { with: { category: true } } } } },
+    with: { items: { with: { product: { with: { category: { with: { shop: true } } } } } } },
     orderBy: (v, { desc }) => [desc(v.createdAt)],
   });
   return c.json(rows);
@@ -57,7 +57,7 @@ variantsRouter.post("/:variantId/items/:itemId/refresh", async (c) => {
   // 1. Fetch the variant item with its product and category
   const variantItem = await db.query.receiptVariantItems.findFirst({
     where: and(eq(receiptVariantItems.id, itemId), eq(receiptVariantItems.variantId, variantId)),
-    with: { product: { with: { category: true } } },
+    with: { product: { with: { category: { with: { shop: true } } } } },
   });
   if (!variantItem) return c.json({ error: "Variant item not found" }, 404);
 
@@ -125,7 +125,7 @@ Return ONLY a JSON array with exactly one element having:
   // 7. Return updated item with full product details + new total
   const updated = await db.query.receiptVariantItems.findFirst({
     where: eq(receiptVariantItems.id, itemId),
-    with: { product: { with: { category: true } } },
+    with: { product: { with: { category: { with: { shop: true } } } } },
   });
   return c.json({ item: updated, newTotal });
 });

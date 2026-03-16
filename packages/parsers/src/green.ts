@@ -3,7 +3,9 @@
  * Run with: pnpm --filter @receipt-optimizer/parsers parse:green
  */
 import { db, categories, products } from "@receipt-optimizer/database";
-import { eq, and, notInArray } from "drizzle-orm";
+import { eq, and, notInArray, max } from "drizzle-orm";
+
+const COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
 
 const GREEN_SHOP_ID = 1;
 const STORE_ID = 2;
@@ -69,6 +71,17 @@ async function run() {
   log(`Found ${dbCategories.length} categories, ${actionableCategories.length} with origin_id`);
 
   for (const category of actionableCategories) {
+    const [{ lastFetched }] = await db
+      .select({ lastFetched: max(products.updatedAt) })
+      .from(products)
+      .where(eq(products.categoryId, category.id));
+
+    if (lastFetched && Date.now() - lastFetched.getTime() < COOLDOWN_MS) {
+      const minutesAgo = Math.round((Date.now() - lastFetched.getTime()) / 60000);
+      log(`Skipping "${category.title}" — fetched ${minutesAgo}m ago (cooldown 60m)`);
+      continue;
+    }
+
     log(`Processing category "${category.title}" (origin_id=${category.originId})`);
 
     let apiProducts: ApiProduct[];

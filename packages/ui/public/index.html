@@ -89,6 +89,7 @@
         <ul>
           <template x-for="shop in shops" :key="shop.id">
             <li>
+              <img x-show="shop.icon" :src="shop.icon" :alt="shop.name" class="shop-icon" />
               <span x-text="shop.name"></span>
               <div class="row-actions">
                 <button class="btn-danger btn-icon" @click="remove(shop.id)">
@@ -136,6 +137,7 @@
         <ul>
           <template x-for="cat in pagedCategories" :key="cat.id">
             <li>
+              <img x-show="shopIcon(cat.shopId)" :src="shopIcon(cat.shopId)" :alt="shopName(cat.shopId)" class="shop-icon" />
               <span x-text="cat.title"></span>
               <span class="tag" x-text="cat.originId"></span>
               <div class="row-actions">
@@ -336,6 +338,7 @@
                   <template x-for="item in v.items" :key="item.id">
                     <li class="variant-item" :class="{ 'variant-item--inactive': item.product.status !== 'active' }">
                       <div class="variant-item-main">
+                        <img x-show="item.product.category?.shop?.icon" :src="item.product.category?.shop?.icon" :alt="item.product.category?.shop?.name" class="shop-icon" />
                         <span class="variant-item-title">
                           <a
                             x-show="item.product.slug"

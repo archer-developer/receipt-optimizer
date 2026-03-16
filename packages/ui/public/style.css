@@ -127,6 +127,7 @@ li {
 li:last-child { border-bottom: none; }
 
 .row-actions { margin-left: auto; display: flex; gap: 0.4rem; }
+.shop-icon { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; }
 
 form { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
 .form-block { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }

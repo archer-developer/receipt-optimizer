@@ -151,6 +151,16 @@ function categoriesManager() {
       return this.categories.slice(start, start + this.pageSize);
     },
 
+    shopIcon(shopId) {
+      const shop = this.shops.find(s => s.id === shopId);
+      return shop?.icon || null;
+    },
+
+    shopName(shopId) {
+      const shop = this.shops.find(s => s.id === shopId);
+      return shop?.name || "";
+    },
+
     async init() {
       const res = await fetch(`${API}/api/shops`);
       this.shops = await res.json();
