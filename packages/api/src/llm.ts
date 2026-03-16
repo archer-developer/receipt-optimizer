@@ -26,6 +26,8 @@ async function buildProxyFetch(url: string): Promise<typeof fetch> {
   let dispatcher;
   if (isSocksProxy(url)) {
     const { SocksClient } = await import("socks");
+    // @ts-ignore
+    const tls = await import("tls");
     const parsed = new URL(url);
     const type = parsed.protocol === "socks4:" ? 4 : 5;
     dispatcher = new Agent({
@@ -42,11 +44,21 @@ async function buildProxyFetch(url: string): Promise<typeof fetch> {
             command: "connect",
             destination: {
               host: options.hostname,
-              port: typeof options.port === "string" ? Number(options.port) : options.port,
+              port: Number(options.port) || (options.protocol === "https:" ? 443 : 80),
             },
           });
           socket.setKeepAlive(true);
-          callback(null, socket);
+          if (options.protocol === "https:") {
+            const tlsSocket = tls.connect({
+              socket,
+              servername: options.servername || options.hostname,
+              rejectUnauthorized: options.rejectUnauthorized !== false,
+            });
+            tlsSocket.once("secureConnect", () => callback(null, tlsSocket));
+            tlsSocket.once("error", (err: Error) => callback(err, null));
+          } else {
+            callback(null, socket);
+          }
         } catch (err) {
           callback(err, null);
         }
