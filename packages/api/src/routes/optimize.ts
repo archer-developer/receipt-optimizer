@@ -15,9 +15,13 @@ interface Suggestion {
   reason: string;
 }
 
-// POST /api/optimize/:receiptId
+// POST /api/optimize/:receiptId  { shopIds?: number[], categoriesPerItem?: number }
 optimizeRouter.post("/:receiptId", async (c) => {
   const receiptId = Number(c.req.param("receiptId"));
+
+  const body = await c.req.json<{ shopIds?: number[]; categoriesPerItem?: number }>().catch(() => ({}));
+  const shopIds: number[] | undefined = body.shopIds?.length ? body.shopIds : undefined;
+  const categoriesPerItem = Math.max(1, Math.min(10, Number(body.categoriesPerItem) || 2));
 
   const receipt = await db.query.receipts.findFirst({
     where: eq(receipts.id, receiptId),
@@ -26,7 +30,9 @@ optimizeRouter.post("/:receiptId", async (c) => {
   if (!receipt) return c.json({ error: "Receipt not found" }, 404);
   if (!receipt.items.length) return c.json({ error: "Receipt has no items" }, 400);
 
-  const allCategories = await db.query.categories.findMany();
+  const allCategories = shopIds
+    ? await db.query.categories.findMany({ where: inArray(categories.shopId, shopIds) })
+    : await db.query.categories.findMany();
   if (!allCategories.length) return c.json({ error: "No categories in catalog" }, 400);
 
   const itemsList = receipt.items
@@ -39,7 +45,7 @@ optimizeRouter.post("/:receiptId", async (c) => {
     .map((cat) => `[id:${cat.id}] ${cat.title}`)
     .join("\n");
 
-  const step1Prompt = `You are a shopping assistant. For each receipt item, select up to 3 most relevant product categories from the list below.
+  const step1Prompt = `You are a shopping assistant. For each receipt item, select up to ${categoriesPerItem} most relevant product categories from the list below.
 
 Receipt items:
 ${itemsList}
@@ -49,7 +55,7 @@ ${categoryList}
 
 Return ONLY a JSON array. Each element must have:
 - "receiptItemId": number
-- "categoryIds": number[] (up to 3 most relevant category ids)`;
+- "categoryIds": number[] (up to ${categoriesPerItem} most relevant category ids)`;
 
   let categoryMatches: { receiptItemId: number; categoryIds: number[] }[];
   try {

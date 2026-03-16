@@ -58,6 +58,9 @@ window.LOCALES['en'] = {
     deleteTitle:        "Delete",
     unknownError:       "Unknown error",
     priceUpdated:       "price updated",
+    configToggle:       "Options",
+    shopsLabel:         "Shops",
+    categoriesPerItem:  "Categories per item",
   },
 
   propositions: {

@@ -15,7 +15,7 @@ const EDOSTAVKA_SHOP_ID = 4;
 const BASE_URL = "https://edostavka.by";
 const COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
 // @ts-ignore
-const PROXY_URL: string | undefined = process.env.LLM_PROXY_URL;
+const PROXY_URL: string | undefined = process.env.PARSERS_PROXY_URL;
 
 // --- Types ---
 

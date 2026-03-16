@@ -58,6 +58,9 @@ window.LOCALES['be'] = {
     deleteTitle:         "Выдаліць",
     unknownError:        "Невядомая памылка",
     priceUpdated:        "цана абноўлена",
+    configToggle:        "Параметры",
+    shopsLabel:          "Крамы",
+    categoriesPerItem:   "Катэгорый на тавар",
   },
 
   propositions: {

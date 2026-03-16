@@ -188,10 +188,40 @@ form { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
 .form-inline { flex-wrap: nowrap; }
 .form-inline input, .form-inline select { flex: 1; min-width: 0; max-width: none; }
 
-.optimize-bar { display: flex; align-items: center; gap: 1rem; margin-top: 1.25rem; }
+.optimize-bar { display: flex; align-items: center; gap: 0.6rem; margin-top: 1.25rem; flex-wrap: wrap; }
 .btn-optimize { background: #7c3aed; }
 .btn-optimize:hover { background: #6d28d9; }
 .btn-optimize:disabled { background: #a78bfa; cursor: not-allowed; }
+.btn-config-toggle { padding: 0.5rem 0.75rem; }
+
+.optimize-config {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.optimize-config-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.optimize-config-label { font-size: 0.85rem; color: #6b7280; white-space: nowrap; }
+.optimize-config-shops { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.shop-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  user-select: none;
+}
+.shop-checkbox:has(input:checked) { border-color: #7c3aed; background: #f5f3ff; }
+.shop-checkbox input { width: 14px; height: 14px; accent-color: #7c3aed; cursor: pointer; }
+.optimize-config-number { width: 4rem; padding: 0.3rem 0.5rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.875rem; text-align: center; }
 
 .error-text { color: #dc2626; font-size: 0.875rem; }
 .price { font-weight: 600; color: #16a34a; font-size: 0.9rem; }

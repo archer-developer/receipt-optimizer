@@ -242,9 +242,24 @@ function receiptDetails() {
     savingVariant: false,
     variants: [],
     refreshingItems: {},
+    shops: [],
+    selectedShopIds: [],
+    categoriesPerItem: 2,
+    configOpen: false,
 
     async init() {
       document.addEventListener("receipt-details-load", (e) => this.load(e.detail.id));
+      const res = await fetch(`${API}/api/shops`);
+      this.shops = await res.json();
+      this.selectedShopIds = this.shops.map((s) => s.id);
+    },
+
+    toggleShop(id) {
+      if (this.selectedShopIds.includes(id)) {
+        this.selectedShopIds = this.selectedShopIds.filter((s) => s !== id);
+      } else {
+        this.selectedShopIds = [...this.selectedShopIds, id];
+      }
     },
 
     async load(id) {
@@ -279,7 +294,15 @@ function receiptDetails() {
       this.optimizeError = "";
       this.suggestions = [];
       try {
-        const res = await fetch(`${API}/api/optimize/${this.receiptId}`, { method: "POST" });
+        const body = {
+          categoriesPerItem: this.categoriesPerItem,
+          ...(this.selectedShopIds.length !== this.shops.length && { shopIds: this.selectedShopIds }),
+        };
+        const res = await fetch(`${API}/api/optimize/${this.receiptId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
         const data = await res.json();
         if (!res.ok) { this.optimizeError = data.error ?? t("receiptDetails.unknownError"); return; }
         this.suggestions = data;
