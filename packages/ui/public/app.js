@@ -339,6 +339,7 @@ function receiptDetails() {
       const name = (shop.name || "").toLowerCase();
       if (name.includes("edostavka")) return `https://edostavka.by/product/${item.product.originId}`;
       if (name.includes("green") && item.product.slug) return `https://green-dostavka.by/product/${item.product.slug}/`;
+      if (name.includes("gippo") && item.product.category?.slug) return `https://gippo-market.by/${item.product.category.slug}(modal:product/${item.product.originId})?category=${item.product.category.originId}`;
       return null;
     },
 

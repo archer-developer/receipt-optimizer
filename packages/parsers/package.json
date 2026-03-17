@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "parse:green": "tsx src/green.ts",
-    "parse:edostavka": "tsx src/edostavka.ts"
+    "parse:edostavka": "tsx src/edostavka.ts",
+    "parse:gippo": "tsx src/gippo.ts"
   },
   "dependencies": {
     "@receipt-optimizer/database": "workspace:*",

@@ -12,6 +12,7 @@ export const categories = pgTable("categories", {
   shopId: integer("shop_id").references(() => shops.id).notNull(),
   originId: text("origin_id").notNull(),
   title: text("title").notNull(),
+  slug: text("slug"),
 }, (t) => ({
   originIdIdx: index("categories_origin_id_idx").on(t.originId),
 }));
