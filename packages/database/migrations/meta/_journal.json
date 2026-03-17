@@ -15,6 +15,13 @@
       "when": 1773477328263,
       "tag": "0001_add_shop_icon",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1773477328264,
+      "tag": "0002_add_category_slug",
+      "breakpoints": true
     }
   ]
 }
