@@ -154,8 +154,3 @@ docker compose exec api pnpm --filter @receipt-optimizer/database db:migrate
 1. Copy `packages/ui/public/locales/en.js` to `locales/xx.js` and translate all values
 2. Add `<script src="locales/xx.js"></script>` in `index.html`
 3. Add `{ code: 'xx', label: 'XX' }` to the `languages` array in `langSwitcher()` in `app.js`
-
-
-0 6 * * * cd /var/www/receipt-optimizer && docker compose run --rm parser pnpm --filter @receipt-optimizer/parsers parse:green >> /var/log/receipt-optimizer-parser.log 2>&1
-0 6 * * * cd /var/www/receipt-optimizer && docker compose run --rm parser pnpm --filter @receipt-optimizer/parsers parse:edostavka >> /var/log/receipt-optimizer-parser.log 2>&1
-0 6 * * * cd /var/www/receipt-optimizer && docker compose run --rm parser pnpm --filter @receipt-optimizer/parsers parse:gippo >> /var/log/receipt-optimizer-parser.log 2>&1
