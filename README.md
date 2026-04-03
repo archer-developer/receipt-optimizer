@@ -60,20 +60,60 @@ The UI is available at **http://localhost:8080**.
 On first run, apply the schema:
 
 ```bash
-cd packages/database
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/receipt_optimizer pnpm db:migrate
+docker compose exec api pnpm --filter @receipt-optimizer/database db:migrate
 ```
 
 ### 4. Sync the product catalog
 
-Run the Green shop parser to populate products and categories:
+Run a parser to populate products and categories. Available parsers:
+
+| Script | Shop |
+|---|---|
+| `parse:green` | Green |
+| `parse:edostavka` | Edostavka |
+| `parse:gippo` | Gippo |
 
 ```bash
 docker compose build parser
 docker compose run --rm parser pnpm --filter @receipt-optimizer/parsers parse:green
+docker compose run --rm parser pnpm --filter @receipt-optimizer/parsers parse:edostavka
+docker compose run --rm parser pnpm --filter @receipt-optimizer/parsers parse:gippo
 ```
 
 > **Note:** Always rebuild the parser image after code changes before running it.
+
+### 5. Schedule daily catalog sync (optional)
+
+To keep prices up to date, schedule all parsers to run daily at 6:00 AM UTC via crontab on the server.
+
+Run `crontab -e` and add:
+
+```cron
+0 6 * * * cd /path/to/receipt-optimizer && docker compose run --rm parser pnpm --filter @receipt-optimizer/parsers parse:green >> /var/log/receipt-optimizer-parser.log 2>&1
+0 6 * * * cd /path/to/receipt-optimizer && docker compose run --rm parser pnpm --filter @receipt-optimizer/parsers parse:edostavka >> /var/log/receipt-optimizer-parser.log 2>&1
+0 6 * * * cd /path/to/receipt-optimizer && docker compose run --rm parser pnpm --filter @receipt-optimizer/parsers parse:gippo >> /var/log/receipt-optimizer-parser.log 2>&1
+```
+
+Replace `/path/to/receipt-optimizer` with the actual path to the project directory on your server.
+
+To prevent the log file from growing unbounded, create `/etc/logrotate.d/receipt-optimizer-parser`:
+
+```
+/var/log/receipt-optimizer-parser.log {
+    daily
+    rotate 14
+    compress
+    missingok
+    notifempty
+    create 0644 root root
+}
+```
+
+Then verify the config with:
+
+```bash
+logrotate --debug /etc/logrotate.d/receipt-optimizer-parser
+```
 
 ## Usage
 
@@ -101,9 +141,12 @@ The API and UI support live reload without rebuilding:
 For schema changes:
 
 ```bash
+# Generate a new migration (run from host, needs DATABASE_URL pointing to postgres)
 cd packages/database
-DATABASE_URL=... pnpm db:generate   # generate migration
-DATABASE_URL=... pnpm db:migrate    # apply migration
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/receipt_optimizer pnpm db:generate
+
+# Apply migrations inside the running api container
+docker compose exec api pnpm --filter @receipt-optimizer/database db:migrate
 ```
 
 ## Adding a language
