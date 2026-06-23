@@ -8,7 +8,7 @@ export const optimizeRouter = new Hono();
 interface Suggestion {
   receiptItemId: number;
   receiptItemTitle: string;
-  productId: number;
+  productId: number | null;
   productTitle: string;
   categoryTitle: string;
   price: string;
@@ -21,7 +21,7 @@ optimizeRouter.post("/:receiptId", async (c) => {
 
   const body = await c.req.json<{ shopIds?: number[]; categoriesPerItem?: number }>().catch(() => ({}));
   const shopIds: number[] | undefined = body.shopIds?.length ? body.shopIds : undefined;
-  const categoriesPerItem = Math.max(1, Math.min(10, Number(body.categoriesPerItem) || 2));
+  const categoriesPerItem = Math.max(1, Math.min(10, Number(body.categoriesPerItem) || 6));
 
   const receipt = await db.query.receipts.findFirst({
     where: eq(receipts.id, receiptId),
@@ -103,12 +103,12 @@ ${itemCatalogs}
 
 Return ONLY a JSON array. Each element must have:
 - "receiptItemId": number
-- "productId": number
+- "productId": number | null (use null if no suitable match found)
 - "reason": string (brief explanation, max 20 words)
 
-Match every receipt item to exactly one product.`;
+Match each receipt item to a product if possible. Use null for productId if no suitable match exists.`;
 
-  let matches: { receiptItemId: number; productId: number; reason: string }[];
+  let matches: { receiptItemId: number; productId: number | null; reason: string }[];
   try {
     const text = await callLLM(step2Prompt);
     matches = parseJsonArray(text);
@@ -120,15 +120,15 @@ Match every receipt item to exactly one product.`;
   const itemMap = new Map(receipt.items.map((it) => [it.id, it]));
 
   const suggestions: Suggestion[] = matches.map((m) => {
-    const product = productMap.get(m.productId);
+    const product = m.productId ? productMap.get(m.productId) : null;
     const item = itemMap.get(m.receiptItemId);
     return {
       receiptItemId: m.receiptItemId,
       receiptItemTitle: item?.title ?? "",
       productId: m.productId,
-      productTitle: product?.productTitle ?? "",
-      categoryTitle: product?.categoryTitle ?? "",
-      price: product?.price ?? "",
+      productTitle: product ? product.productTitle : "Не найдено",
+      categoryTitle: product ? product.categoryTitle : "",
+      price: product ? product.price : "",
       reason: m.reason,
     };
   });
